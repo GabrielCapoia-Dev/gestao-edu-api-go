@@ -12,7 +12,7 @@ func NewUserService(repository Repository) *UserService {
 	}
 }
 
-func (userService *UserService) CreateUser(ctx context.Context, name, email, password string) (*User, error) {
+func (userService *UserService) CreateUser(ctx context.Context, request *CreateUserRequest) (*User, error) {
 
 	// Lógica para criar um usuário, incluindo validação de email, hash da senha, etc.
 	return nil, nil
