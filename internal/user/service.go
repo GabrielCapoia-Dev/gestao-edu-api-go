@@ -1,6 +1,7 @@
 package user
 
 import (
+	"api-golang/internal/security/password"
 	"context"
 	"errors"
 	"strings"
@@ -37,7 +38,7 @@ func (userService *UserService) CreateUser(ctx context.Context, request *CreateU
 		return nil, errors.New("Email ja cadastrado")
 	}
 
-	PasswordHash, err := HashPassword(request.Password)
+	PasswordHash, err := password.HashPassword(request.Password)
 	if err != nil {
 		return nil, err
 	}
