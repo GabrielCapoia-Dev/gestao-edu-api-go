@@ -43,9 +43,24 @@ func (userService *UserService) CreateUser(ctx context.Context, request *CreateU
 
 	// Verifica se o email ja cadastrado usando o Repository
 	// Usando o metodo do construtor UserService, que recebe um Repository como parâmetro
-	if ok, err := userService.repository.EmailExists(ctx, request.Email); ok {
+	// if ok, err := userService.repository.EmailExists(ctx, request.Email); ok {
+	// 	return nil, err
+	// }
+
+
+	// Verifica se o email ja cadastrado usando o Repository e salva na variavel exists
+	exists, err := userService.repository.EmailExists(ctx, request.Email)
+
+	// Verifica se ocorreu algum erro
+	if err != nil {
 		return nil, err
 	}
+
+	// Verifica se o email ja cadastrado
+	if exists {
+		return nil, errors.New("Email ja cadastrado")
+	}
+
 
 	// Variaveis em Go começam com Minuscula
 	passwordHash, err := password.HashPassword(request.Password)
