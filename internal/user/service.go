@@ -11,12 +11,19 @@ type UserService struct {
 	repository Repository
 }
 
+// Construtor da classe UserService, recebe um Repository como parâmetro e retorna uma instância de UserService
 func NewUserService(repository Repository) *UserService {
 	return &UserService{
 		repository: repository,
 	}
 }
 
+/*
+Metodo de Criar Usuário
+recebe um context da operação
+Recebe um DTO de Criar Usuário, ou no caso um Request
+Retorna um usuário e um erro
+*/
 func (userService *UserService) CreateUser(ctx context.Context, request *CreateUserRequest) (*User, error) {
 
 	request.Name = strings.TrimSpace(request.Name)
@@ -38,7 +45,9 @@ func (userService *UserService) CreateUser(ctx context.Context, request *CreateU
 		return nil, errors.New("Email ja cadastrado")
 	}
 
-	PasswordHash, err := password.HashPassword(request.Password)
+	// Variaveis em Go começam com Minuscula
+	passwordHash, err := password.HashPassword(request.Password)
+
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +55,7 @@ func (userService *UserService) CreateUser(ctx context.Context, request *CreateU
 	user := &User{
 		Name:         request.Name,
 		Email:        request.Email,
-		PasswordHash: PasswordHash,
+		PasswordHash: passwordHash,
 	}
 
 	if err := userService.repository.Create(ctx, user); err != nil {
