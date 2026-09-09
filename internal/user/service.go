@@ -41,8 +41,10 @@ func (userService *UserService) CreateUser(ctx context.Context, request *CreateU
 		return nil, errors.New("Password é obrigatório e deve ter pelo menos 6 caracteres")
 	}
 
-	if ok, _ := userService.repository.EmailExists(ctx, request.Email); ok {
-		return nil, errors.New("Email ja cadastrado")
+	// Verifica se o email ja cadastrado usando o Repository
+	// Usando o metodo do construtor UserService, que recebe um Repository como parâmetro
+	if ok, err := userService.repository.EmailExists(ctx, request.Email); ok {
+		return nil, err
 	}
 
 	// Variaveis em Go começam com Minuscula
