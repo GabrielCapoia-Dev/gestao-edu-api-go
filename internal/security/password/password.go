@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"strings"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -40,7 +41,6 @@ func HashPassword(password string) (string, error) {
 	saltEncoded := base64.RawStdEncoding.EncodeToString(salt)
 	hashEncoded := base64.RawStdEncoding.EncodeToString(hash)
 
-
 	// Gera o hash codificado
 	encodedHash := fmt.Sprintf(
 		"$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s",
@@ -56,8 +56,14 @@ func HashPassword(password string) (string, error) {
 	return encodedHash, nil
 }
 
-
 // Verifica se a senha fornecida corresponde ao hash
 func VerifyPassword(password string, encodedHash string) (bool, error) {
-    return false, nil
+
+	parts := strings.Split(encodedHash, "$")
+
+	if len(parts) != 6 {
+		return false, fmt.Errorf("hash inválido")
+	}
+
+	return false, nil
 }
