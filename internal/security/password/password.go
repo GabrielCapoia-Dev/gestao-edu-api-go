@@ -59,10 +59,26 @@ func HashPassword(password string) (string, error) {
 // Verifica se a senha fornecida corresponde ao hash
 func VerifyPassword(password string, encodedHash string) (bool, error) {
 
+	var memory uint32
+	var time uint32
+	var threads uint8
+
 	parts := strings.Split(encodedHash, "$")
 
 	if len(parts) != 6 {
 		return false, fmt.Errorf("hash inválido")
+	}
+
+	_, err := fmt.Sscanf(
+		parts[3],
+		"m=%d,t=%d,p=%d",
+		&memory,
+		&time,
+		&threads,
+	)
+
+	if err != nil {
+		return false, fmt.Errorf("parâmetros do hash inválidos: %w", err)
 	}
 
 	return false, nil
