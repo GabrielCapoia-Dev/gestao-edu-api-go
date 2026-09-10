@@ -3,8 +3,10 @@ package password
 import (
 	"crypto/rand"
 	"encoding/base64"
+
 	"golang.org/x/crypto/argon2"
 )
+
 func HashPassword(password string) (string, error) {
 
 	// Gera um salt aleatório de 16 bytes
@@ -16,18 +18,23 @@ func HashPassword(password string) (string, error) {
 		return "", err
 	}
 
-	// Hash o password com o salt
-	/*
-		[]byte(password) → senha em bytes
-		salt             → salt aleatório
-		1                → número de iterações
-		64*1024          → memória: 64 MiB
-		4                → paralelismo
-		32               → tamanho final do hash: 32 bytes
-	*/
-	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
+	// Configurações do Argon2
+	time := uint32(1)
+	memory := uint32(64 * 1024)
+	threads := uint8(4)
+	keyLength := uint32(32)
 
-	// Codifica o salt e o hash em base64 para armazenar 
+	// Hash o password com o salt usando Argon2id
+	hash := argon2.IDKey(
+		[]byte(password),
+		salt,
+		time,
+		memory,
+		threads,
+		keyLength,
+	)
+
+	// Codifica o salt e o hash em base64 para armazenar
 	// como string evitando erro de caracteres quebrados e bytes incorretos
 	saltEncoded := base64.RawStdEncoding.EncodeToString(salt)
 	hashEncoded := base64.RawStdEncoding.EncodeToString(hash)
@@ -35,4 +42,3 @@ func HashPassword(password string) (string, error) {
 	// Retorna o salt e o hash
 	return saltEncoded + ":" + hashEncoded, nil
 }
-
