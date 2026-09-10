@@ -55,3 +55,9 @@ func HashPassword(password string) (string, error) {
 	// Retorna o hash codificado
 	return encodedHash, nil
 }
+
+
+// Verifica se a senha fornecida corresponde ao hash
+func VerifyPassword(password string, encodedHash string) (bool, error) {
+    return false, nil
+}
