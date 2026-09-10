@@ -2,6 +2,7 @@ package password
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
 	"strings"
@@ -81,5 +82,28 @@ func VerifyPassword(password string, encodedHash string) (bool, error) {
 		return false, fmt.Errorf("parâmetros do hash inválidos: %w", err)
 	}
 
-	return false, nil
+	salt, err := base64.RawStdEncoding.DecodeString(parts[4])
+
+	if err != nil {
+		return false, fmt.Errorf("salt inválido: %w", err)
+	}
+
+	decodedHash, err := base64.RawStdEncoding.DecodeString(parts[5])
+
+	if err != nil {
+		return false, fmt.Errorf("hash inválido: %w", err)
+	}
+
+	candidateHash := argon2.IDKey(
+		[]byte(password),
+		salt,
+		time,
+		memory,
+		threads,
+		uint32(len(decodedHash)),
+	)
+
+	match := subtle.ConstantTimeCompare(candidateHash, decodedHash) == 1
+
+	return match, nil
 }
