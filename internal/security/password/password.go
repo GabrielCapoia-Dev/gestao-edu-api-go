@@ -27,7 +27,8 @@ func HashPassword(password string) (string, error) {
 	*/
 	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
 
-	// Codifica o salt e o hash em base64 para armazenar como string evitando erro de caracteres quebrados e bytes incorretos
+	// Codifica o salt e o hash em base64 para armazenar 
+	// como string evitando erro de caracteres quebrados e bytes incorretos
 	saltEncoded := base64.RawStdEncoding.EncodeToString(salt)
 	hashEncoded := base64.RawStdEncoding.EncodeToString(hash)
 
