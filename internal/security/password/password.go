@@ -3,6 +3,7 @@ package password
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -39,6 +40,18 @@ func HashPassword(password string) (string, error) {
 	saltEncoded := base64.RawStdEncoding.EncodeToString(salt)
 	hashEncoded := base64.RawStdEncoding.EncodeToString(hash)
 
-	// Retorna o salt e o hash
-	return saltEncoded + ":" + hashEncoded, nil
+
+	// Gera o hash codificado
+	encodedHash := fmt.Sprintf(
+		"$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s",
+		argon2.Version,
+		memory,
+		time,
+		threads,
+		saltEncoded,
+		hashEncoded,
+	)
+
+	// Retorna o hash codificado
+	return encodedHash, nil
 }
